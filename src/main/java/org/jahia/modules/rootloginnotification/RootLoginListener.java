@@ -15,13 +15,11 @@ import org.springframework.context.ApplicationListener;
 public final class RootLoginListener implements ApplicationListener<LoginEvent> {
 
     private static final String REMOTE_ADDRESS_HEADER = "x-forwarded-for";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss z");
-    public MailService mailService;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd 'at' HH:mm:ss z");
+    private MailService mailService;
 
     @Override
     public void onApplicationEvent(LoginEvent loginEvent) {
-        System.out.println(loginEvent.getSource());
-        System.out.println(loginEvent.getJahiaUser());
 
         if (mailService.isEnabled() && loginEvent.getJahiaUser().isRoot()) {
             final HttpServletRequest request = loginEvent.getAuthValveContext().getRequest();
@@ -53,7 +51,7 @@ public final class RootLoginListener implements ApplicationListener<LoginEvent> 
                     + "Regards,";
 
             mailService.sendMessage(sender, recipient, null, null, String.format(subject, serverName, site),
-                    String.format(body, remoteAddress, DATE_FORMAT.format(loginDate)));
+                    String.format(body, remoteAddress, dateFormat.format(loginDate)));
         }
     }
 
