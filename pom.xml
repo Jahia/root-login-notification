@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
@@ -13,7 +10,7 @@
     <groupId>org.jahia.modules</groupId>
     <artifactId>root-login-notification</artifactId>
     <name>root login notification</name>
-    <version>1.0.0-SNAPSHOT</version>    
+    <version>1.0.0</version>    
     <packaging>bundle</packaging>
     <description>This is the custom module (root login notification) for running on a Digital Experience Manager server.</description>
 
@@ -21,6 +18,7 @@
     <connection>scm:git:git@github.com:Jahia/root-login-notification.git</connection>
     <developerConnection>scm:git:git@github.com:Jahia/root-login-notification.git</developerConnection>
     <url>https://github.com/Jahia/root-login-notification</url>
+    <tag>1_0_0</tag>
   </scm>
 
     <repositories>
