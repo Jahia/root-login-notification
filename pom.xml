@@ -10,7 +10,7 @@
     <groupId>org.jahia.modules</groupId>
     <artifactId>root-login-notification</artifactId>
     <name>root login notification</name>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (root login notification) for running on a Digital Experience Manager server.</description>
 
@@ -18,7 +18,7 @@
     <connection>scm:git:git@github.com:Jahia/root-login-notification.git</connection>
     <developerConnection>scm:git:git@github.com:Jahia/root-login-notification.git</developerConnection>
     <url>https://github.com/Jahia/root-login-notification</url>
-    <tag>root-login-notification-2.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
     <properties>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
