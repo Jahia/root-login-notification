@@ -1,0 +1,19 @@
+{
+  "label": {
+    "menu_entry": "Root Login Notification",
+    "title": "Root Login Notification Settings",
+    "description": "Configure the email sent to administrators when the root account successfully logs in.",
+    "recipient": "Recipient",
+    "recipientPlaceholder": "Leave empty to use the Jahia default mail recipient",
+    "sender": "Sender",
+    "senderPlaceholder": "Leave empty to use the Jahia default mail sender",
+    "subject": "Subject",
+    "subjectHint": "Available tokens: {server}, {site}",
+    "body": "Body",
+    "bodyHint": "Available tokens: {ip}, {time}",
+    "save": "Save settings",
+    "saveSuccess": "Settings saved successfully.",
+    "saveError": "An error occurred while saving the settings.",
+    "invalidEmail": "Please enter a valid email address"
+  }
+}

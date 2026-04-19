@@ -1,29 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.0.0.0</version>
+        <version>8.2.1.0</version>
     </parent>
-    <groupId>org.jahia.modules</groupId>
+    <groupId>org.jahia.community</groupId>
     <artifactId>root-login-notification</artifactId>
     <name>root login notification</name>
     <version>2.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <description>This is the custom module (root login notification) for running on a Digital Experience Manager server.</description>
+    <description>Jahia module that sends an email notification when the root user logs in.</description>
 
-  <scm>
-    <connection>scm:git:git@github.com:Jahia/root-login-notification.git</connection>
-    <developerConnection>scm:git:git@github.com:Jahia/root-login-notification.git</developerConnection>
-    <url>https://github.com/Jahia/root-login-notification</url>
-    <tag>HEAD</tag>
-  </scm>
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/root-login-notification.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/root-login-notification.git</developerConnection>
+        <url>https://github.com/Jahia/root-login-notification</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
-        <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
-        <jahia-module-signature>MCwCFDgtNGXA7rgvPMV4r+yOXLGUq9fOAhQGiRHS6lT5elWeiQvdds1uqYAIJg==</jahia-module-signature>
+        <yarn.arguments>build:production</yarn.arguments>
+        <jahia-deploy-on-site>all</jahia-deploy-on-site>
+        <jahia-module-type>system</jahia-module-type>
+        <jahia-depends>default,graphql-dxm-provider,richtext-ckeditor5</jahia-depends>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>${graphql-java.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java-kickstart</groupId>
+            <artifactId>graphql-java-servlet</artifactId>
+            <version>${graphql-java-servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>graphql-dxm-provider</artifactId>
+            <version>3.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
     <repositories>
         <repository>
@@ -43,12 +74,47 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.0</version>
+                <executions>
+                    <execution>
+                        <id>npm install node and yarn</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v22.6.0</nodeVersion>
+                            <yarnVersion>v1.22.21</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>yarn post-install</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>${yarn.arguments}</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Depends>default</Jahia-Depends>
+                        <_dsannotations>org.jahia.modules.rootloginnotification.*</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>
