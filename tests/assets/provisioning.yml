@@ -1,0 +1,13 @@
+- karafCommand: "log:log 'START - provisioning root-login-notification'"
+
+- karafCommand: "log:log 'Install root-login-notification dependencies'"
+- installBundle:
+      - 'mvn:org.jahia.modules/graphql-dxm-provider/LATEST'
+      - 'mvn:org.jahia.modules/richtext-ckeditor5/LATEST'
+  autoStart: true
+  uninstallPreviousVersion: false
+
+- karafCommand: "log:log 'Configure SMTP server'"
+- executeScript: "setup-smtp-server.groovy"
+
+- karafCommand: "log:log 'END - provisioning root-login-notification'"

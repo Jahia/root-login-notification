@@ -1,0 +1,8 @@
+mutation saveSettings($recipient: String, $sender: String, $subject: String, $body: String) {
+    rootLoginNotificationSaveSettings(
+        recipient: $recipient
+        sender: $sender
+        subject: $subject
+        body: $body
+    )
+}

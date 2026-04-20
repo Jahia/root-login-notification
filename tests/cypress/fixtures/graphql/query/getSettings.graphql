@@ -1,0 +1,8 @@
+query {
+    rootLoginNotificationSettings {
+        recipient
+        sender
+        subject
+        body
+    }
+}
