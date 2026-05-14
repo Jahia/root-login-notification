@@ -3,6 +3,7 @@
     "menu_entry": "Root Login Notification",
     "title": "Root Login Notification Settings",
     "description": "Configure the email sent to administrators when the root account successfully logs in.",
+    "loading": "Loading, please wait.",
     "recipient": "Recipient",
     "recipientPlaceholder": "Leave empty to use the Jahia default mail recipient",
     "sender": "Sender",
