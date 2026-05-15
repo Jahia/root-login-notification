@@ -231,7 +231,6 @@ export const RootLoginNotificationAdmin = () => {
                         placeholder={t('label.recipientPlaceholder')}
                         autoComplete="email"
                         required
-                        aria-required="true"
                         aria-invalid={Boolean(errors.recipient)}
                         aria-describedby={['rln-recipient-hint', errors.recipient ? 'rln-recipient-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('recipient')}
@@ -260,7 +259,6 @@ export const RootLoginNotificationAdmin = () => {
                         placeholder={t('label.senderPlaceholder')}
                         autoComplete="email"
                         required
-                        aria-required="true"
                         aria-invalid={Boolean(errors.sender)}
                         aria-describedby={['rln-sender-hint', errors.sender ? 'rln-sender-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('sender')}
@@ -292,12 +290,9 @@ export const RootLoginNotificationAdmin = () => {
                     <span id="rln-body-label" className={styles.rln_label}>
                         {t('label.body')}
                     </span>
-                    {/* M-04: role="group" so aria-labelledby is honoured by AT */}
+                    {/* C-03/M-04: label/describe set directly on contenteditable via onReady — avoids double-label from role="group" + onReady combination */}
                     <div
                         className={`${styles.rln_editor}${saving ? ` ${styles['rln_editor--disabled']}` : ''}`}
-                        role="group"
-                        aria-labelledby="rln-body-label"
-                        aria-describedby="rln-body-hint"
                     >
                         <CKEditor
                             editor={ClassicEditor}

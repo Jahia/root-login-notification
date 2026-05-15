@@ -37,8 +37,11 @@
 }
 
 .rln_container {
+    /* M-06: width: 100% prevents overflow on narrow viewports */
+    width: 100%;
     padding: 1.5rem 2rem;
     max-width: 700px;
+    box-sizing: border-box;
 }
 
 .rln_header {
@@ -153,10 +156,10 @@
     align-items: center;
     gap: 0.5em;
 
-    /* M-02: high-contrast borders — #a5d6a7 (1.9:1) → #4caf50 (4.5:1); #ef9a9a (2.1:1) → #f44336 (5.1:1) */
+    /* M-02: high-contrast borders — #a5d6a7 (1.9:1) → #388e3c (4.1:1); #ef9a9a (2.1:1) → #f44336 (5.1:1) */
     &--success {
         background-color: #e8f5e9;
-        border: 1px solid #4caf50;
+        border: 1px solid #388e3c;
         color: #2e7d32;
     }
 
