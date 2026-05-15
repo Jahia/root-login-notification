@@ -79,10 +79,14 @@ export const RootLoginNotificationAdmin = () => {
     const [errors, setErrors] = useState({recipient: '', sender: ''});
     const recipientInputRef = useRef(null);
     const senderInputRef = useRef(null);
-    const saveLiveRef = useRef(null);
 
+    // N-02: restore previous page title on unmount
     useEffect(() => {
+        const prevTitle = document.title;
         document.title = `${t('label.title')} — Jahia Administration`;
+        return () => {
+            document.title = prevTitle;
+        };
     }, [t]);
 
     const [formState, setFormState] = useState({
@@ -129,6 +133,15 @@ export const RootLoginNotificationAdmin = () => {
         setFormState(prev => ({...prev, body: editor.getData()}));
     };
 
+    // C-03: set ARIA attributes directly on the CKEditor contenteditable at mount
+    const handleEditorReady = editor => {
+        const editableEl = editor.ui.getEditableElement();
+        if (editableEl) {
+            editableEl.setAttribute('aria-labelledby', 'rln-body-label');
+            editableEl.setAttribute('aria-describedby', 'rln-body-hint');
+        }
+    };
+
     const handleSave = async () => {
         const recipientError = validateEmailField(formState.recipient);
         const senderError = validateEmailField(formState.sender);
@@ -143,7 +156,7 @@ export const RootLoginNotificationAdmin = () => {
             return;
         }
 
-        setSaveStatus(null);
+        // C-02: setSaveStatus(null) removed — clearing before await drops the final announcement
         try {
             const result = await saveSettings({
                 variables: {
@@ -159,13 +172,10 @@ export const RootLoginNotificationAdmin = () => {
             setSaveStatus('error');
         }
 
-        setTimeout(() => saveLiveRef.current?.focus(), 50);
+        // M-01: setTimeout focus removed — focus naturally stays on Save button
     };
 
     const hasErrors = Boolean(errors.recipient || errors.sender);
-
-    const saveLiveMsg = saveStatus === 'success' ? t('label.saveSuccess') :
-        saveStatus === 'error' ? t('label.saveError') : '';
 
     if (loading) {
         return (
@@ -178,16 +188,15 @@ export const RootLoginNotificationAdmin = () => {
 
     return (
         <div className={styles.rln_container}>
-            {/* Persistent live region — always in DOM so AT registers it before status changes */}
-            <div
-                ref={saveLiveRef}
-                tabIndex={-1}
-                role={saveStatus === 'error' ? 'alert' : 'status'}
-                aria-live={saveStatus === 'error' ? 'assertive' : 'polite'}
-                aria-atomic="true"
-                className={styles.rln_sr_only}
-            >
-                {saveLiveMsg}
+            {/* M-05: skip link to bypass header/description for keyboard users */}
+            <a href="#rln-main" className={styles.rln_skipLink}>{t('label.skipToForm')}</a>
+
+            {/* C-01: two fixed-role live regions — AT registers role at mount, never mutate role */}
+            <div role="status" aria-live="polite" aria-atomic="true" className={styles.rln_sr_only}>
+                {saveStatus === 'success' ? t('label.saveSuccess') : ''}
+            </div>
+            <div role="alert" aria-live="assertive" aria-atomic="true" className={styles.rln_sr_only}>
+                {saveStatus === 'error' ? t('label.saveError') : ''}
             </div>
 
             <div className={styles.rln_header}>
@@ -198,10 +207,17 @@ export const RootLoginNotificationAdmin = () => {
                 <Typography>{t('label.description')}</Typography>
             </div>
 
-            <div className={styles.rln_form}>
+            <div id="rln-main" className={styles.rln_form}>
+                {/* M-03: required fields note */}
+                <p className={styles.rln_requiredNote}>
+                    <span aria-hidden="true">* </span>{t('label.requiredFieldsNote')}
+                </p>
+
                 <div className={styles.rln_fieldGroup}>
                     <label className={styles.rln_label} htmlFor="rln-recipient">
                         {t('label.recipient')}
+                        <span aria-hidden="true"> *</span>
+                        <span className={styles.rln_sr_only}> ({t('label.required')})</span>
                     </label>
                     <span id="rln-recipient-hint" className={styles.rln_sr_only}>
                         {t('label.recipientPlaceholder')}
@@ -214,6 +230,8 @@ export const RootLoginNotificationAdmin = () => {
                         value={formState.recipient}
                         placeholder={t('label.recipientPlaceholder')}
                         autoComplete="email"
+                        required
+                        aria-required="true"
                         aria-invalid={Boolean(errors.recipient)}
                         aria-describedby={['rln-recipient-hint', errors.recipient ? 'rln-recipient-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('recipient')}
@@ -227,6 +245,8 @@ export const RootLoginNotificationAdmin = () => {
                 <div className={styles.rln_fieldGroup}>
                     <label className={styles.rln_label} htmlFor="rln-sender">
                         {t('label.sender')}
+                        <span aria-hidden="true"> *</span>
+                        <span className={styles.rln_sr_only}> ({t('label.required')})</span>
                     </label>
                     <span id="rln-sender-hint" className={styles.rln_sr_only}>
                         {t('label.senderPlaceholder')}
@@ -239,6 +259,8 @@ export const RootLoginNotificationAdmin = () => {
                         value={formState.sender}
                         placeholder={t('label.senderPlaceholder')}
                         autoComplete="email"
+                        required
+                        aria-required="true"
                         aria-invalid={Boolean(errors.sender)}
                         aria-describedby={['rln-sender-hint', errors.sender ? 'rln-sender-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('sender')}
@@ -259,19 +281,21 @@ export const RootLoginNotificationAdmin = () => {
                         className={styles.rln_input}
                         value={formState.subject}
                         aria-describedby="rln-subject-hint"
+                        autoComplete="off"
                         onChange={handleChange('subject')}
                     />
                     <span id="rln-subject-hint" className={styles.rln_fieldHint}>{t('label.subjectHint')}</span>
                 </div>
 
                 <div className={styles.rln_fieldGroup}>
-                    {/* aria-hidden — CKEditor renders a contenteditable, not a native input;
-                        the editor wrapper carries aria-labelledby instead */}
-                    <span id="rln-body-label" className={styles.rln_label} aria-hidden="false">
+                    {/* C-03: aria-hidden="false" removed (WAI-ARIA spec violation on visible elements) */}
+                    <span id="rln-body-label" className={styles.rln_label}>
                         {t('label.body')}
                     </span>
+                    {/* M-04: role="group" so aria-labelledby is honoured by AT */}
                     <div
                         className={`${styles.rln_editor}${saving ? ` ${styles['rln_editor--disabled']}` : ''}`}
+                        role="group"
                         aria-labelledby="rln-body-label"
                         aria-describedby="rln-body-hint"
                     >
@@ -281,6 +305,7 @@ export const RootLoginNotificationAdmin = () => {
                             disabled={saving}
                             data={formState.body}
                             onChange={handleBodyChange}
+                            onReady={handleEditorReady}
                         />
                     </div>
                     <span id="rln-body-hint" className={styles.rln_fieldHint}>{t('label.bodyHint')}</span>
