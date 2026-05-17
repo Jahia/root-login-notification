@@ -18,8 +18,16 @@ Jahia OSGi module that sends an email notification whenever the root account suc
 | `RootLoginNotificationQueryExtension` | GraphQL query |
 | `RootLoginNotificationMutationExtension` | GraphQL mutation |
 
-The listener checks `x-forwarded-for` header first; falls back to `getRemoteAddr()` for the IP address.  
+The listener checks `x-forwarded-for` header first; falls back to `getRemoteAddr()` for the IP address. When `x-forwarded-for` contains a comma-separated chain, only the first entry (the client) is kept.  
 Mail is sent via `MailService.sendMessage(sender, recipient, null, null, subject, null, body)` — HTML body, null text body.
+
+### Input Sanitization (security)
+
+User-controlled values inserted into subject/body are sanitized to prevent SMTP header injection (CRLF) and XSS:
+
+- `{server}`, `{ip}` — `sanitizeHost`: trimmed to 255 chars, stripped to `[A-Za-z0-9._:\-]`
+- `{site}` — `sanitizeHeader`: trimmed to 255 chars, control chars (`< 0x20`, `0x7F`) removed
+- `{ip}` and `{time}` — additionally HTML-escaped (`StringEscapeUtils.escapeHtml`) before substitution into the HTML body
 
 ### Email Template Variables
 
