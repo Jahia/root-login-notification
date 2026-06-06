@@ -41,10 +41,10 @@ public class RootLoginNotificationMutationExtension {
             @GraphQLName("subject") @GraphQLDescription("Subject template — tokens: {server}, {site}") String subject,
             @GraphQLName("body") @GraphQLDescription("Body template — tokens: {ip}, {time}") String body) {
         if (!isValidEmail(recipient)) {
-            throw new IllegalArgumentException("Invalid recipient email address: " + recipient);
+            throw new IllegalArgumentException("Invalid recipient email address");
         }
         if (!isValidEmail(sender)) {
-            throw new IllegalArgumentException("Invalid sender email address: " + sender);
+            throw new IllegalArgumentException("Invalid sender email address");
         }
         try {
             final ConfigurationAdmin configAdmin = BundleUtils.getOsgiService(ConfigurationAdmin.class, null);
@@ -68,9 +68,15 @@ public class RootLoginNotificationMutationExtension {
             }
             if (subject != null && !subject.isEmpty()) {
                 props.put("subject", subject);
+            } else {
+                props.remove("subject");
+                LOGGER.debug("subject not provided or empty — removed from config (default will be used)");
             }
             if (body != null && !body.isEmpty()) {
                 props.put("body", body);
+            } else {
+                props.remove("body");
+                LOGGER.debug("body not provided or empty — removed from config (default will be used)");
             }
             config.update(props);
             return Boolean.TRUE;
