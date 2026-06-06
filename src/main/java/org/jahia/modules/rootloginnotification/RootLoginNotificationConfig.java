@@ -25,10 +25,10 @@ public class RootLoginNotificationConfig implements ManagedService {
             + " and to help you to protect them.</p>"
             + "<p>Regards,</p>";
 
-    private String recipient = null;
-    private String sender = null;
-    private String subject = DEFAULT_SUBJECT;
-    private String body = DEFAULT_BODY;
+    private volatile String recipient = null;
+    private volatile String sender = null;
+    private volatile String subject = DEFAULT_SUBJECT;
+    private volatile String body = DEFAULT_BODY;
 
     @Override
     public void updated(Dictionary<String, ?> dictionary) throws ConfigurationException {
