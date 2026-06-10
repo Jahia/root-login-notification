@@ -34,7 +34,7 @@ public class RootLoginNotificationMutationExtension {
     @GraphQLField
     @GraphQLName("rootLoginNotificationSaveSettings")
     @GraphQLDescription("Saves the root login notification mail settings")
-    @GraphQLRequiresPermission("admin")
+    @GraphQLRequiresPermission("rootLoginNotificationAdmin")
     public static Boolean saveSettings(
             @GraphQLName("recipient") @GraphQLDescription("Custom recipient email (optional, leave empty to use MailService default)") String recipient,
             @GraphQLName("sender") @GraphQLDescription("Custom sender email (optional, leave empty to use MailService default)") String sender,
