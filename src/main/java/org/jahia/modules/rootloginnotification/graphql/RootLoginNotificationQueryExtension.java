@@ -20,7 +20,7 @@ public class RootLoginNotificationQueryExtension {
     @GraphQLField
     @GraphQLName("rootLoginNotificationSettings")
     @GraphQLDescription("Returns the current root login notification mail settings")
-    @GraphQLRequiresPermission("admin")
+    @GraphQLRequiresPermission("rootLoginNotificationAdmin")
     public static GqlSettings settings() {
         final RootLoginNotificationConfig config = BundleUtils.getOsgiService(RootLoginNotificationConfig.class, null);
         if (config == null) {
