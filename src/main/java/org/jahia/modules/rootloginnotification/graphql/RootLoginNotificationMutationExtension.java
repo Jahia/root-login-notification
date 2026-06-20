@@ -31,6 +31,18 @@ public class RootLoginNotificationMutationExtension {
         return email == null || email.isEmpty() || EMAIL_PATTERN.matcher(email).matches();
     }
 
+    /**
+     * Sets {@code key} to {@code value} when non-empty, otherwise removes it so the
+     * module falls back to its default for that setting.
+     */
+    private static void putOrRemove(Dictionary<String, Object> props, String key, String value) {
+        if (value != null && !value.isEmpty()) {
+            props.put(key, value);
+        } else {
+            props.remove(key);
+        }
+    }
+
     @GraphQLField
     @GraphQLName("rootLoginNotificationSaveSettings")
     @GraphQLDescription("Saves the root login notification mail settings")
@@ -56,28 +68,10 @@ public class RootLoginNotificationMutationExtension {
             if (props == null) {
                 props = new Hashtable<>();
             }
-            if (recipient != null && !recipient.isEmpty()) {
-                props.put("recipient", recipient);
-            } else {
-                props.remove("recipient");
-            }
-            if (sender != null && !sender.isEmpty()) {
-                props.put("sender", sender);
-            } else {
-                props.remove("sender");
-            }
-            if (subject != null && !subject.isEmpty()) {
-                props.put("subject", subject);
-            } else {
-                props.remove("subject");
-                LOGGER.debug("subject not provided or empty — removed from config (default will be used)");
-            }
-            if (body != null && !body.isEmpty()) {
-                props.put("body", body);
-            } else {
-                props.remove("body");
-                LOGGER.debug("body not provided or empty — removed from config (default will be used)");
-            }
+            putOrRemove(props, "recipient", recipient);
+            putOrRemove(props, "sender", sender);
+            putOrRemove(props, "subject", subject);
+            putOrRemove(props, "body", body);
             config.update(props);
             return Boolean.TRUE;
         } catch (Exception e) {

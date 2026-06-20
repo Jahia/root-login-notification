@@ -224,13 +224,13 @@ export const RootLoginNotificationAdmin = () => {
                     </span>
                     <input
                         ref={recipientInputRef}
+                        required
                         type="email"
                         id="rln-recipient"
                         className={`${styles.rln_input}${errors.recipient ? ` ${styles['rln_input--error']}` : ''}`}
                         value={formState.recipient}
                         placeholder={t('label.recipientPlaceholder')}
                         autoComplete="email"
-                        required
                         aria-invalid={Boolean(errors.recipient)}
                         aria-describedby={['rln-recipient-hint', errors.recipient ? 'rln-recipient-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('recipient')}
@@ -252,13 +252,13 @@ export const RootLoginNotificationAdmin = () => {
                     </span>
                     <input
                         ref={senderInputRef}
+                        required
                         type="email"
                         id="rln-sender"
                         className={`${styles.rln_input}${errors.sender ? ` ${styles['rln_input--error']}` : ''}`}
                         value={formState.sender}
                         placeholder={t('label.senderPlaceholder')}
                         autoComplete="email"
-                        required
                         aria-invalid={Boolean(errors.sender)}
                         aria-describedby={['rln-sender-hint', errors.sender ? 'rln-sender-error' : ''].filter(Boolean).join(' ')}
                         onChange={handleChange('sender')}
