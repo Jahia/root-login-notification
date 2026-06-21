@@ -30,7 +30,7 @@ describe('Root Login Notification', () => {
     describe('Settings API', () => {
         it('returns all settings fields via GraphQL', () => {
             cy.apollo({query: getSettings})
-                .its('data.rootLoginNotificationSettings')
+                .its('data.rootLoginNotification.settings')
                 .should(s => {
                     expect(s).to.have.property('recipient');
                     expect(s).to.have.property('sender');
@@ -47,7 +47,7 @@ describe('Root Login Notification', () => {
                     body: '<p>Test body {ip} {time}</p>'
                 }
             })
-                .its('data.rootLoginNotificationSaveSettings')
+                .its('data.rootLoginNotification.saveSettings')
                 .should('eq', true);
         });
 
@@ -62,7 +62,7 @@ describe('Root Login Notification', () => {
                 }
             });
             cy.apollo({query: getSettings})
-                .its('data.rootLoginNotificationSettings')
+                .its('data.rootLoginNotification.settings')
                 .should(s => {
                     expect(s.recipient).to.eq('roundtrip@jahia.test');
                     expect(s.subject).to.eq(testSubject);
@@ -80,7 +80,7 @@ describe('Root Login Notification', () => {
                 }
             });
             cy.apollo({query: getSettings})
-                .its('data.rootLoginNotificationSettings')
+                .its('data.rootLoginNotification.settings')
                 .should(s => {
                     expect(s.recipient).to.be.null;
                     expect(s.sender).to.be.null;
@@ -98,7 +98,7 @@ describe('Root Login Notification', () => {
                 errorPolicy: 'all'
             }).should(result => {
                 // The mutation should either return false or throw a GraphQL error
-                const saved = result.data?.rootLoginNotificationSaveSettings;
+                const saved = result.data?.rootLoginNotification?.saveSettings;
                 const hasErrors = result.errors && result.errors.length > 0;
                 expect(saved === false || hasErrors).to.be.true;
             });

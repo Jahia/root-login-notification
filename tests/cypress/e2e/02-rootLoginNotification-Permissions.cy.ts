@@ -60,8 +60,8 @@ describe('Root Login Notification — permission enforcement', () => {
         it('allows the gated query for a user granted only the module permission', () => {
             querySettingsAs(ALLOWED_USER).then((result: never) => {
                 expect(errorsOf(result), 'should have no errors').to.have.length(0);
-                const settings = (result as {data: {rootLoginNotificationSettings: Record<string, unknown>}})
-                    .data.rootLoginNotificationSettings;
+                const settings = (result as {data: {rootLoginNotification: {settings: Record<string, unknown>}}})
+                    .data.rootLoginNotification.settings;
                 expect(settings).to.have.property('recipient');
                 expect(settings).to.have.property('sender');
                 expect(settings).to.have.property('subject');

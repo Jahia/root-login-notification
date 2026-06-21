@@ -99,7 +99,7 @@ export const RootLoginNotificationAdmin = () => {
     const {loading} = useQuery(GET_SETTINGS, {
         fetchPolicy: 'network-only',
         onCompleted: data => {
-            const s = data?.rootLoginNotificationSettings;
+            const s = data?.rootLoginNotification?.settings;
             if (s) {
                 setFormState({
                     recipient: s.recipient ?? '',
@@ -166,7 +166,7 @@ export const RootLoginNotificationAdmin = () => {
                     body: formState.body
                 }
             });
-            setSaveStatus(result.data?.rootLoginNotificationSaveSettings ? 'success' : 'error');
+            setSaveStatus(result.data?.rootLoginNotification?.saveSettings ? 'success' : 'error');
         } catch (err) {
             console.error('Failed to save settings:', err);
             setSaveStatus('error');
