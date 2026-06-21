@@ -1,8 +1,10 @@
 query {
-    rootLoginNotificationSettings {
-        recipient
-        sender
-        subject
-        body
+    rootLoginNotification {
+        settings {
+            recipient
+            sender
+            subject
+            body
+        }
     }
 }
