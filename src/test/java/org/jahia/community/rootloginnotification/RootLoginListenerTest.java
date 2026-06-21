@@ -1,4 +1,4 @@
-package org.jahia.modules.rootloginnotification;
+package org.jahia.community.rootloginnotification;
 
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.params.valves.BaseLoginEvent;

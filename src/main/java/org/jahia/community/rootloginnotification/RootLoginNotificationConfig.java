@@ -1,4 +1,4 @@
-package org.jahia.modules.rootloginnotification;
+package org.jahia.community.rootloginnotification;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.cm.ConfigurationException;
@@ -10,7 +10,7 @@ import java.util.Dictionary;
 @Component(
         immediate = true,
         service = {RootLoginNotificationConfig.class, ManagedService.class},
-        property = Constants.SERVICE_PID + "=org.jahia.modules.rootloginnotification"
+        property = Constants.SERVICE_PID + "=org.jahia.community.rootloginnotification"
 )
 public class RootLoginNotificationConfig implements ManagedService {
 

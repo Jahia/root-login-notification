@@ -1,4 +1,4 @@
-package org.jahia.modules.rootloginnotification.graphql;
+package org.jahia.community.rootloginnotification.graphql;
 
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
@@ -57,7 +57,7 @@ public class RootLoginNotificationMutation {
             if (configAdmin == null) {
                 return Boolean.FALSE;
             }
-            final Configuration config = configAdmin.getConfiguration("org.jahia.modules.rootloginnotification", null);
+            final Configuration config = configAdmin.getConfiguration("org.jahia.community.rootloginnotification", null);
             Dictionary<String, Object> props = config.getProperties();
             if (props == null) {
                 props = new Hashtable<>();

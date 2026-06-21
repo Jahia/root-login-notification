@@ -1,4 +1,4 @@
-package org.jahia.modules.rootloginnotification;
+package org.jahia.community.rootloginnotification;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
