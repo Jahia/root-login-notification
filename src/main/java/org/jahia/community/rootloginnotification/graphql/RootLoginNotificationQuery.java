@@ -1,10 +1,10 @@
-package org.jahia.modules.rootloginnotification.graphql;
+package org.jahia.community.rootloginnotification.graphql;
 
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import org.jahia.modules.graphql.provider.dxm.security.GraphQLRequiresPermission;
-import org.jahia.modules.rootloginnotification.RootLoginNotificationConfig;
+import org.jahia.community.rootloginnotification.RootLoginNotificationConfig;
 import org.jahia.osgi.BundleUtils;
 
 @GraphQLName("RootLoginNotificationQuery")

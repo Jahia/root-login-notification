@@ -5,9 +5,9 @@ Jahia OSGi module that sends an email notification whenever the root account suc
 ## Key Facts
 
 - **artifactId**: `root-login-notification` | **version**: `2.0.2-SNAPSHOT`
-- **Java package**: `org.jahia.modules.rootloginnotification`
+- **Java package**: `org.jahia.community.rootloginnotification`
 - **jahia-depends**: `default,graphql-dxm-provider,richtext-ckeditor5`
-- **OSGi config PID**: `org.jahia.modules.rootloginnotification`
+- **OSGi config PID**: `org.jahia.community.rootloginnotification`
 
 ## Architecture
 

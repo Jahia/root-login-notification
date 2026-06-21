@@ -131,7 +131,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <_dsannotations>org.jahia.modules.rootloginnotification.*</_dsannotations>
+                        <_dsannotations>org.jahia.community.rootloginnotification.*</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>

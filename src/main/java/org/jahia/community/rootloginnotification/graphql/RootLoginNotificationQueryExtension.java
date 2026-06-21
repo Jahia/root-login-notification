@@ -1,4 +1,4 @@
-package org.jahia.modules.rootloginnotification.graphql;
+package org.jahia.community.rootloginnotification.graphql;
 
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
