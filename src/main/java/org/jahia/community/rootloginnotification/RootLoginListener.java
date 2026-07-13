@@ -72,7 +72,7 @@ public final class RootLoginListener implements JahiaEventListener<BaseLoginEven
         final String remoteAddress = sanitizeHost(resolveRemoteAddress(request));
         final String site = sanitizeHeader(resolveSite(request));
         final String serverName = sanitizeHost(request != null ? request.getServerName() : null);
-        final String loginTime = DATE_FORMATTER.format(Instant.ofEpochMilli(baseLoginEvent.getTimestamp()));
+        final String loginTime = formatLoginTime(baseLoginEvent.getTimestamp());
 
         // recipient/sender may come from the OSGi .cfg file directly (bypassing the GraphQL
         // email-format validation), so sanitize CR/LF here as a header-injection defense.
@@ -94,6 +94,16 @@ public final class RootLoginListener implements JahiaEventListener<BaseLoginEven
         }
 
         mailService.sendMessage(sender, recipient, null, null, subject, null, body);
+    }
+
+    /**
+     * Formats a login timestamp (epoch millis) with {@code yyyy/MM/dd 'at' HH:mm:ss z} in the
+     * server-default timezone. Extracted (package-private) so the {@code {time}} formatting can be
+     * unit-tested directly: {@code BaseLoginEvent.getTimestamp()} is final and returns 0L under
+     * Mockito, so it cannot be driven end-to-end. Behaviour is identical to the previous inline call.
+     */
+    static String formatLoginTime(long epochMillis) {
+        return DATE_FORMATTER.format(Instant.ofEpochMilli(epochMillis));
     }
 
     private static String resolveRemoteAddress(HttpServletRequest request) {

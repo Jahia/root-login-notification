@@ -21,7 +21,9 @@ public class RootLoginNotificationMutation {
     private static final Logger LOGGER = LoggerFactory.getLogger(RootLoginNotificationMutation.class);
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
-    private static boolean isValidEmail(String email) {
+    // Package-private (not private) so the validation rule can be unit-tested directly without
+    // PowerMock; the full saveSettings path needs ConfigurationAdmin and is covered by Cypress.
+    static boolean isValidEmail(String email) {
         return email == null || email.isEmpty() || EMAIL_PATTERN.matcher(email).matches();
     }
 
