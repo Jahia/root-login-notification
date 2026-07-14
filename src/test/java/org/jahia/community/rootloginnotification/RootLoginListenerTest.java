@@ -255,25 +255,30 @@ public class RootLoginListenerTest {
                 });
     }
 
-    // ── S14 — SECURITY characterization: forged X-Forwarded-For lands verbatim ───────
+    // ── S14 — U1 REMEDIATED: XFF is advisory, real socket peer surfaced alongside it ─
 
     @Test
-    public void forgedXForwardedForIsUsedVerbatim() {
-        // CHARACTERIZATION — flip after U1 remediation.
-        // No trusted-proxy context: xff is fully client-controlled. The left-most hop is used
-        // with no allowlist / no right-most selection, so a forged value lands in the alert as-is.
+    public void forgedXForwardedForIsShownAlongsideRealSocketPeer() {
+        // REMEDIATION (U1): x-forwarded-for is client-controllable and therefore advisory. The alert
+        // now surfaces the real TCP socket peer (getRemoteAddr) alongside the forwarded value, so a
+        // spoofed XFF can no longer HIDE the actual peer. Both values must appear in the body.
         HttpServletRequest req = request("1.2.3.4", "10.0.0.9", "host", "site");
         listener.onEvent(rootEvent(req));
 
-        assertThat(sentBody()).contains("1.2.3.4").doesNotContain("10.0.0.9");
+        String body = sentBody();
+        assertThat(body).contains("1.2.3.4");   // forwarded (advisory) value still reported
+        assertThat(body).contains("10.0.0.9");  // real socket peer now also reported — cannot be hidden
     }
 
-    // ── S15 — SECURITY characterization: forged Host header lands verbatim ───────────
+    // ── S15 — U2 DOCUMENTED DECISION: Host header remains advisory (accepted limitation) ─
 
     @Test
     public void forgedHostHeaderIsUsedVerbatimInSubject() {
-        // CHARACTERIZATION — flip after U2 remediation.
-        // sanitizeHost only strips unsafe chars; an all-safe attacker-supplied Host is kept as-is.
+        // DOCUMENTED DECISION (U2): the Host header is client-controllable, but unlike the IP there is
+        // no server-authoritative alternative to surface without a configured expected-host allowlist.
+        // Per the Stage-7 minimal-hardening decision this is accepted and documented in the trust model
+        // (README/AGENTS "Security & trust model"): {server} is advisory. sanitizeHost still strips any
+        // CR/LF header-injection vector; only forgery (not injection) is out of scope here.
         HttpServletRequest req = request("10.0.0.1", null, "evil-lookalike.example.com", "site");
         listener.onEvent(rootEvent(req));
 
