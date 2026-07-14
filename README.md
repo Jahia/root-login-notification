@@ -43,17 +43,19 @@ body=<p>Hi,</p><p>We're sending this email following a successful connection to 
 
 ## GraphQL API
 
-All operations require the `admin` permission.
+All operations are grouped under the `rootLoginNotification` namespace field and require the custom `rootLoginNotificationAdmin` permission (the module ships a `root-login-notification-administrator` role that grants it) — not the generic `admin` permission.
 
 ### Query
 
 ```graphql
 query {
-    rootLoginNotificationSettings {
-        recipient   # String (null = Jahia default)
-        sender      # String (null = Jahia default)
-        subject
-        body
+    rootLoginNotification {
+        settings {
+            recipient   # String (null = Jahia default)
+            sender      # String (null = Jahia default)
+            subject
+            body
+        }
     }
 }
 ```
@@ -62,13 +64,22 @@ query {
 
 ```graphql
 mutation {
-    rootLoginNotificationSaveSettings(
-        recipient: "security@example.com"  # optional
-        sender: "noreply@example.com"      # optional
-        subject: "[{server}] Root login"
-        body: "<p>IP: {ip} — {time}</p>"
-    )
+    rootLoginNotification {
+        saveSettings(
+            recipient: "security@example.com"  # optional
+            sender: "noreply@example.com"      # optional
+            subject: "[{server}] Root login"
+            body: "<p>IP: {ip} — {time}</p>"
+        )
+    }
 }
 ```
 
 Returns `true` on success, `false` on error. Passing `null` for `recipient` or `sender` resets them to the Jahia mail service default. Invalid email addresses are rejected.
+
+## Security & trust model
+
+The `{ip}` and `{server}` tokens derive from client-controllable request data:
+
+- **`{ip}`** — read from `X-Forwarded-For` (advisory: any client can forge it, as no trusted-proxy chain is enforced). The real TCP socket peer (`getRemoteAddr()`) is always reported alongside it (e.g. `1.2.3.4 (socket: 10.0.0.9)`), so a spoofed XFF cannot hide the connecting peer.
+- **`{server}`** — the client-supplied Host header (advisory). CR/LF header-injection is stripped, but forgery of an otherwise-valid hostname is out of scope for this notification.

@@ -1,6 +1,6 @@
 {
   "name": "@jahia/root-login-notification",
-  "version": "2.0.1-SNAPSHOT",
+  "version": "2.0.5-SNAPSHOT",
   "scripts": {
     "build": "yarn webpack",
     "webpack": "webpack",
