@@ -10,9 +10,17 @@ import java.util.Dictionary;
 @Component(
         immediate = true,
         service = {RootLoginNotificationConfig.class, ManagedService.class},
-        property = Constants.SERVICE_PID + "=org.jahia.community.rootloginnotification"
+        property = Constants.SERVICE_PID + "=" + RootLoginNotificationConfig.PID
 )
 public class RootLoginNotificationConfig implements ManagedService {
+
+    /**
+     * The OSGi configuration PID this module consumes. It is the single source of truth referenced by
+     * the {@code service.pid} registration, the {@code saveSettings} mutation's ConfigurationAdmin
+     * lookup, and the shipped default {@code <PID>.cfg} filename — keeping the three in lock-step so
+     * Felix FileInstall delivers the default to the service (guards against the D3 config-PID drift).
+     */
+    public static final String PID = "org.jahia.community.rootloginnotification";
 
     public static final String DEFAULT_SUBJECT =
             "[{server} - {site}] Connection notification to the root account";

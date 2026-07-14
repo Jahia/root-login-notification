@@ -8,31 +8,25 @@ import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * D3 config-PID mismatch guard (S38) — <b>INTENTIONALLY RED until the Stage-7 product fix.</b>
+ * D3 config-PID mismatch guard (S38) — <b>regression guard (GREEN since the Stage-7 fix).</b>
  *
  * <p>Felix FileInstall delivers a shipped default {@code <PID>.cfg} to the OSGi service registered
  * under that same PID. The service/mutation consume the PID
- * {@code org.jahia.community.rootloginnotification}
- * ({@code RootLoginNotificationConfig} {@code service.pid}, {@code RootLoginNotificationMutation}
- * ConfigurationAdmin lookup), but the shipped file is named
- * {@code org.jahia.modules.rootloginnotification.cfg} — so the default never reaches {@code updated()}
- * and the shipped {@code subject}/{@code body} are silently ignored (the Java-hardcoded defaults mask
- * the bug).
+ * {@link RootLoginNotificationConfig#PID} ({@code RootLoginNotificationConfig} {@code service.pid},
+ * {@code RootLoginNotificationMutation} ConfigurationAdmin lookup). Before Stage 7 the shipped file
+ * was named {@code org.jahia.modules.rootloginnotification.cfg} — so the default never reached
+ * {@code updated()} and the shipped {@code subject}/{@code body} were silently ignored (the
+ * Java-hardcoded defaults masked the bug).
  *
  * <p>This is a deterministic build/resource assertion — no container, no test ordering. It reads the
- * shipped {@code .cfg} basename and asserts it equals the consumed PID.
- * <ul>
- *   <li><b>RED today</b> — basename is {@code org.jahia.modules.rootloginnotification}.</li>
- *   <li><b>GREEN after Stage 7</b> — {@code git mv} the file to
- *       {@code org.jahia.community.rootloginnotification.cfg}.</li>
- * </ul>
- * It fails as a normal test assertion (NOT a build/compile break), so the rest of the suite still
- * runs. Do NOT {@code @Ignore} it — its red state is the signal Stage 7 uses to verify the fix.
+ * shipped {@code .cfg} basename and asserts it equals the consumed PID. Stage 7 {@code git mv}'d the
+ * file to {@code org.jahia.community.rootloginnotification.cfg}, so this now passes and stands as the
+ * regression guard preventing the PID drift from recurring.
  */
 public class ConfigPidConsistencyTest {
 
     /** The PID the ManagedService + mutation actually consume. */
-    private static final String CONSUMED_PID = "org.jahia.community.rootloginnotification";
+    private static final String CONSUMED_PID = RootLoginNotificationConfig.PID;
 
     private static final String CONFIG_DIR = "src/main/resources/META-INF/configurations";
 

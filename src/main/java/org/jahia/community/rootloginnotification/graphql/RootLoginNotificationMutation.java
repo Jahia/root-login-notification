@@ -3,6 +3,7 @@ package org.jahia.community.rootloginnotification.graphql;
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
+import org.jahia.community.rootloginnotification.RootLoginNotificationConfig;
 import org.jahia.modules.graphql.provider.dxm.security.GraphQLRequiresPermission;
 import org.jahia.osgi.BundleUtils;
 import org.osgi.service.cm.Configuration;
@@ -59,7 +60,7 @@ public class RootLoginNotificationMutation {
             if (configAdmin == null) {
                 return Boolean.FALSE;
             }
-            final Configuration config = configAdmin.getConfiguration("org.jahia.community.rootloginnotification", null);
+            final Configuration config = configAdmin.getConfiguration(RootLoginNotificationConfig.PID, null);
             Dictionary<String, Object> props = config.getProperties();
             if (props == null) {
                 props = new Hashtable<>();
