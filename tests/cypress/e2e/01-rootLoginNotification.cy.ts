@@ -103,6 +103,24 @@ describe('Root Login Notification', () => {
                 expect(saved === false || hasErrors).to.be.true;
             });
         });
+
+        it('rejects an invalid sender email address', () => {
+            // S27 — the sender branch of isValidEmail (recipient/subject/body are all valid).
+            cy.apollo({
+                mutation: saveSettings,
+                variables: {
+                    recipient: 'valid@jahia.test',
+                    sender: 'bad sender',
+                    subject: '[{server}] Test',
+                    body: '<p>Body</p>'
+                },
+                errorPolicy: 'all'
+            }).should(result => {
+                const saved = result.data?.rootLoginNotification?.saveSettings;
+                const hasErrors = result.errors && result.errors.length > 0;
+                expect(saved === false || hasErrors).to.be.true;
+            });
+        });
     });
 
     // ─── Admin UI ────────────────────────────────────────────────────────────────
@@ -217,10 +235,17 @@ describe('Root Login Notification', () => {
         });
 
         it('email body has IP and time tokens replaced', () => {
+            // Hardened (was a fixed cy.wait(10000) reading the "latest" mail, which could return
+            // S32's residual email). Clear the inbox, trigger THIS login, then poll for its email
+            // so the body assertion is guaranteed against the email this test produced.
+            cy.mailpitDeleteAllEmails();
             cy.clearCookies();
             // Trigger root login via the same valve that fires LoginEvent
             cy.login();
-            cy.wait(10000);
+
+            // Poll until this login's email arrives instead of a fixed wait
+            cy.mailpitHasEmailsByTo(testRecipient, 0, 50, {timeout: 30000});
+
             // mailpitGetMail() returns the full message including HTML and Text body
             cy.mailpitGetMail().then(mail => {
                 const body: string = mail.HTML || mail.Text || '';
@@ -234,7 +259,9 @@ describe('Root Login Notification', () => {
         });
 
         it('does not send a notification email when a non-root user logs in', () => {
+            // Start from a known-empty inbox and a clean session so no prior root cookie leaks in.
             cy.mailpitDeleteAllEmails();
+            cy.clearCookies();
 
             // Log in as a regular admin user — should NOT trigger a notification
             cy.request({
@@ -250,8 +277,10 @@ describe('Root Login Notification', () => {
                 failOnStatusCode: false
             });
 
-            // Give Jahia a moment to process the login event
-            cy.wait(3000);
+            // Give Jahia time to process the login event; a (wrongly) sent email would arrive within
+            // this window and flip the count, so the negative assertion is meaningful rather than
+            // just checking an inbox that was never given a chance to fill.
+            cy.wait(5000);
 
             cy.mailpitGetAllMails().then(mails => {
                 expect(mails.messages_count).to.eq(0);

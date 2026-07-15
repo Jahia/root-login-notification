@@ -1,6 +1,6 @@
 {
   "name": "@jahia/root-login-notification",
-  "version": "2.0.1-SNAPSHOT",
+  "version": "2.0.5-SNAPSHOT",
   "scripts": {
     "build": "yarn webpack",
     "webpack": "webpack",
@@ -12,7 +12,8 @@
     "lint:js:fix": "yarn lint:js --fix",
     "lint": "yarn lint:js",
     "lint:fix": "yarn lint:js:fix",
-    "sync-pom": "sync-pom-version --use-yarn"
+    "sync-pom": "sync-pom-version --use-yarn",
+    "check:versions": "node scripts/check-version-consistency.js"
   },
   "description": "React admin UI for root login notification settings",
   "main": "index.js",

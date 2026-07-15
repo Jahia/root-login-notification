@@ -69,10 +69,10 @@ public final class RootLoginListener implements JahiaEventListener<BaseLoginEven
         final AuthValveContext valveContext = baseLoginEvent.getAuthValveContext();
         final HttpServletRequest request = (valveContext != null) ? valveContext.getRequest() : null;
 
-        final String remoteAddress = sanitizeHost(resolveRemoteAddress(request));
+        final String remoteAddress = resolveRemoteAddress(request);
         final String site = sanitizeHeader(resolveSite(request));
         final String serverName = sanitizeHost(request != null ? request.getServerName() : null);
-        final String loginTime = DATE_FORMATTER.format(Instant.ofEpochMilli(baseLoginEvent.getTimestamp()));
+        final String loginTime = formatLoginTime(baseLoginEvent.getTimestamp());
 
         // recipient/sender may come from the OSGi .cfg file directly (bypassing the GraphQL
         // email-format validation), so sanitize CR/LF here as a header-injection defense.
@@ -96,22 +96,51 @@ public final class RootLoginListener implements JahiaEventListener<BaseLoginEven
         mailService.sendMessage(sender, recipient, null, null, subject, null, body);
     }
 
+    /**
+     * Formats a login timestamp (epoch millis) with {@code yyyy/MM/dd 'at' HH:mm:ss z} in the
+     * server-default timezone. Extracted (package-private) so the {@code {time}} formatting can be
+     * unit-tested directly: {@code BaseLoginEvent.getTimestamp()} is final and returns 0L under
+     * Mockito, so it cannot be driven end-to-end. Behaviour is identical to the previous inline call.
+     */
+    static String formatLoginTime(long epochMillis) {
+        return DATE_FORMATTER.format(Instant.ofEpochMilli(epochMillis));
+    }
+
+    /**
+     * Builds the IP shown in the alert.
+     *
+     * <p>Trust model: {@code X-Forwarded-For} is client-controllable and therefore <em>advisory</em> —
+     * any client can forge it, and this module does not enforce a trusted-proxy chain. So the real TCP
+     * socket peer ({@code request.getRemoteAddr()}) is always surfaced alongside the forwarded value; a
+     * spoofed XFF can no longer <em>hide</em> the actual peer that connected. When no XFF header is
+     * present, or it equals the socket peer, only the socket peer is shown.
+     *
+     * <p>Each component is sanitized individually via {@link #sanitizeHost(String)} before the composite
+     * is assembled (the composite itself is HTML-escaped by the caller before entering the body).
+     */
     private static String resolveRemoteAddress(HttpServletRequest request) {
         if (request == null) {
             return "";
         }
-        String remoteAddress = request.getHeader(REMOTE_ADDRESS_HEADER);
-        if (remoteAddress == null) {
-            remoteAddress = request.getRemoteAddr();
+        final String socketAddress = sanitizeHost(request.getRemoteAddr());
+        final String forwardedFor = sanitizeHost(firstForwardedForHop(request.getHeader(REMOTE_ADDRESS_HEADER)));
+
+        if (forwardedFor.isEmpty()) {
+            return socketAddress;
         }
-        // x-forwarded-for may contain a comma-separated chain; keep only the first entry (the client).
-        if (remoteAddress != null) {
-            final int comma = remoteAddress.indexOf(',');
-            if (comma >= 0) {
-                remoteAddress = remoteAddress.substring(0, comma);
-            }
+        if (socketAddress.isEmpty() || forwardedFor.equals(socketAddress)) {
+            return forwardedFor;
         }
-        return remoteAddress;
+        return forwardedFor + " (socket: " + socketAddress + ")";
+    }
+
+    /** x-forwarded-for may be a comma-separated chain; keep only the first entry (the purported client). */
+    private static String firstForwardedForHop(String headerValue) {
+        if (headerValue == null) {
+            return null;
+        }
+        final int comma = headerValue.indexOf(',');
+        return (comma >= 0) ? headerValue.substring(0, comma) : headerValue;
     }
 
     private static String resolveSite(HttpServletRequest request) {

@@ -23,6 +23,8 @@ describe('Root Login Notification — permission enforcement', () => {
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const getSettings: DocumentNode = require('graphql-tag/loader!../fixtures/graphql/query/getSettings.graphql');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const saveSettings: DocumentNode = require('graphql-tag/loader!../fixtures/graphql/mutation/saveSettings.graphql');
 
     const errorsOf = (result: {graphQLErrors?: Array<{message: string}>; errors?: Array<{message: string}>}) =>
         result.graphQLErrors ?? result.errors ?? [];
@@ -67,6 +69,37 @@ describe('Root Login Notification — permission enforcement', () => {
                 expect(settings).to.have.property('subject');
                 expect(settings).to.have.property('body');
             });
+        });
+
+        it('denies the gated mutation for a user without the permission and persists no change', () => {
+            // S31 — the existing suite covers only the query deny; this guards the
+            // @GraphQLRequiresPermission on saveSettings. The attempted value must NOT persist.
+            const forbiddenRecipient = 'denied-should-not-persist@jahia.test';
+
+            cy.apolloClient({username: DENIED_USER, password: PASSWORD});
+            cy.apollo({
+                mutation: saveSettings,
+                variables: {
+                    recipient: forbiddenRecipient,
+                    sender: null,
+                    subject: '[{server}] denied attempt',
+                    body: '<p>denied</p>'
+                },
+                errorPolicy: 'all'
+            }).then((result: never) => {
+                const errs = errorsOf(result);
+                expect(errs, 'denial errors').to.have.length.greaterThan(0);
+                expect(errs.map((e: {message: string}) => e.message).join(' ')).to.contain('Permission denied');
+            });
+
+            // As root, confirm the denied mutation persisted nothing.
+            cy.apolloClient(); // reset the current Apollo client back to root
+            cy.login();
+            cy.apollo({query: getSettings})
+                .its('data.rootLoginNotification.settings')
+                .should(s => {
+                    expect(s.recipient).to.not.eq(forbiddenRecipient);
+                });
         });
     });
 

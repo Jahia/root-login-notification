@@ -3,6 +3,7 @@ package org.jahia.community.rootloginnotification.graphql;
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
+import org.jahia.community.rootloginnotification.RootLoginNotificationConfig;
 import org.jahia.modules.graphql.provider.dxm.security.GraphQLRequiresPermission;
 import org.jahia.osgi.BundleUtils;
 import org.osgi.service.cm.Configuration;
@@ -21,7 +22,9 @@ public class RootLoginNotificationMutation {
     private static final Logger LOGGER = LoggerFactory.getLogger(RootLoginNotificationMutation.class);
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
-    private static boolean isValidEmail(String email) {
+    // Package-private (not private) so the validation rule can be unit-tested directly without
+    // PowerMock; the full saveSettings path needs ConfigurationAdmin and is covered by Cypress.
+    static boolean isValidEmail(String email) {
         return email == null || email.isEmpty() || EMAIL_PATTERN.matcher(email).matches();
     }
 
@@ -57,7 +60,7 @@ public class RootLoginNotificationMutation {
             if (configAdmin == null) {
                 return Boolean.FALSE;
             }
-            final Configuration config = configAdmin.getConfiguration("org.jahia.community.rootloginnotification", null);
+            final Configuration config = configAdmin.getConfiguration(RootLoginNotificationConfig.PID, null);
             Dictionary<String, Object> props = config.getProperties();
             if (props == null) {
                 props = new Hashtable<>();
