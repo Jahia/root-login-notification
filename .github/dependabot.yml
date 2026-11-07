@@ -40,6 +40,9 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+      # ckeditor5-react 12 is a runtime major that must match the platform's richtext-ckeditor5; needs a manual migration.
+      - dependency-name: "@ckeditor/ckeditor5-react"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/tests"

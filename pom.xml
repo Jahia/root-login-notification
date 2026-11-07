@@ -72,11 +72,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Test-only SLF4J provider so the WARN-log path (S6/U4) can be captured via a ListAppender.
-             1.4.14 binds slf4j-api 2.0.7 (the version already on the classpath). Not shipped in the bundle. -->
+             1.6.x (Java 11 bytecode) binds slf4j-api 2.0.x (2.0.7 is already on the classpath). Not shipped in the bundle. -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.14</version>
+            <version>1.6.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
