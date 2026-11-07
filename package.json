@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.2",
-    "@ckeditor/ckeditor5-react": "^11.1.0",
+    "@ckeditor/ckeditor5-react": "^11.2.0",
     "@jahia/moonstone": "^2.21.1",
     "@jahia/ui-extender": "^1.1.0",
     "graphql": "^15.10.3",
