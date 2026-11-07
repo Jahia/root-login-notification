@@ -987,17 +987,17 @@
     "@babel/helper-string-parser" "^7.29.7"
     "@babel/helper-validator-identifier" "^7.29.7"
 
-"@ckeditor/ckeditor5-integrations-common@^2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-integrations-common/-/ckeditor5-integrations-common-2.3.1.tgz#c6013b9e31e87e3e409dc33721d97e9b1ab78e4f"
-  integrity sha512-YcNvRhPMBIHjExmSVGypx98N8E5AiESUZTBzphrzstfxtunJFFVvFJ3KuzHwKLaBUPs7YIpqS6cNVft1gFRH7Q==
+"@ckeditor/ckeditor5-integrations-common@^2.4.0":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-integrations-common/-/ckeditor5-integrations-common-2.4.1.tgz#19f6fa0fe075af4b40773aeeb103b36dacbed29a"
+  integrity sha512-DKBMAoKuNWebCFQurX748FP/D8QzfQs7cW5BCJVYRjz0bgbhV33Wj15zKVtByaNLLLOy/fKcYPGHv06KVc4k/Q==
 
-"@ckeditor/ckeditor5-react@^11.1.0":
-  version "11.1.2"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-react/-/ckeditor5-react-11.1.2.tgz#169edc11ee2f19ecabb21da6125172433737ab11"
-  integrity sha512-RCmCTatLfJkr1q2wyJH1jk4d1WSqpTy/ThTiTsXJmgkapjUnlPU/841NcVD7MNK6/73RUC4mOpQKS3C3XyzexA==
+"@ckeditor/ckeditor5-react@^11.2.0":
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-react/-/ckeditor5-react-11.2.0.tgz#e46ddc3c8c9bfbf28ead412dbd52db85198a95be"
+  integrity sha512-EZrwjyAf8L3p+4E2v3rRb2XMKgFogojla84xmW9LoUyloayurJ1TlifNhmRGmS2paeUGxqRDHjBA0yn+SsTdLg==
   dependencies:
-    "@ckeditor/ckeditor5-integrations-common" "^2.3.1"
+    "@ckeditor/ckeditor5-integrations-common" "^2.4.0"
 
 "@cyclonedx/cyclonedx-library@^10.0.0":
   version "10.0.0"
