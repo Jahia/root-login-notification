@@ -39,7 +39,7 @@
     "**/@types/minimatch/minimatch": "^11.0.5",
     "**/@typescript-eslint/typescript-estree/minimatch": "^11.0.5",
     "**/cacache/glob": "^14.0.3",
-    "@babel/core": "^7.29.6",
+    "@babel/core": "^7.29.13",
     "@babel/plugin-transform-modules-systemjs": "^7.29.4",
     "baseline-browser-mapping": "^2.11.35",
     "browserslist": "^4.29.5",
@@ -56,7 +56,7 @@
     "ws": "^7.5.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.29.13",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.29.7",
     "@babel/preset-react": "^7.29.7",
